@@ -8,12 +8,16 @@ import { sliderItems } from '../data';
 
 const Container = styled.div`
     width: 100%;
-    height: 50vh;
+    height: 70vh;
     display: flex;
     background-color: #F4F4F4;
     position: relative;
     overflow: hidden;
     margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `
 
 const Arrow = styled.div`
@@ -43,7 +47,7 @@ const Wrapper = styled.div`
 `
 
 const Slide = styled.div`
-    width: 100vw;
+    width: 75vw;
     height: 100vh;
     display: flex;
     align-items: center;
@@ -52,6 +56,8 @@ const Slide = styled.div`
 const ImageContainer = styled.div`
     height: 100%;
     flex: 1;
+    display: flex;
+    justify-content: flex-end;
 `
 
 const Image = styled.img`
@@ -60,12 +66,13 @@ const Image = styled.img`
 
 const InfoContainer = styled.div`
     flex: 1;
-    padding: 50px;
+    padding: 0px;
     padding-left: 100px;
+    padding-bottom: 200px;
 `
 
 const Title = styled.h1`
-    font-size: 70px;
+    font-size: 50px;
 `
 
 const Desc = styled.h1`
@@ -89,23 +96,10 @@ const Button = styled.h1`
 
 const Slider = () => {
 
-    const [slideIndex, setSlideIndex] = useState(0);
-
-    const handleClick = (direction) => {
-        if(direction === "left") {
-            setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2);
-        } else {
-            setSlideIndex(slideIndex < 2 ? slideIndex + 1: 0);
-        }
-    };
-
     return (
         <div>
             <Container>
-                <Arrow direction="left" onClick = {() => handleClick("left")}>
-                    <ArrowBackIosNewOutlinedIcon />
-                </Arrow>
-                <Wrapper slideIndex =  {slideIndex}>
+                <Wrapper>
                     {sliderItems.map(item=> ( 
                     <Slide key={item.id}>
                         <InfoContainer>
@@ -125,9 +119,6 @@ const Slider = () => {
                     </Slide>
                     ))}
                 </Wrapper>
-                <Arrow direction = "right" onClick = {() => handleClick("right")}>
-                    <ArrowForwardIosOutlinedIcon />
-                </Arrow>
             </Container>
         </div>
     )

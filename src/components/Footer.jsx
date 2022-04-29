@@ -54,6 +54,8 @@ const Right = styled.div`
     margin-top: 40px;
     flex: 1;
     padding: 20px;
+    display: flex;
+    justify-content: flex-end;
 
     .payment-tile {
         width: 60px;

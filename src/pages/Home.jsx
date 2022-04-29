@@ -7,6 +7,7 @@ import GlobalStyle from '../globalstyles';
 import Products from '../pages/Products';
 import Cart from '../components/Cart';
 import LandingPage from './LandingPage';
+import Checkout from './Checkout';
 import { commerce } from '../lib/commerce';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -63,9 +64,10 @@ const Home = () => {
                 <Navbar totalItems={cart.total_items}/>
                 <StyledMainContainer>
                     <Routes>
-                        <Route exact path="/" element={<Products products={products} onAddToCart={handleAddToCart}/>} />
+                        <Route exact path = "/" element={<Products products={products} onAddToCart={handleAddToCart}/>} />
                         <Route exact path = "/cart" element={<Cart cart={cart} emptyCart={emptyCart} updateCart={handleUpdateCartQuantity} removeFromCart={handleRemoveFromCart}/>} />
                         <Route exact path = "/zip-landing-page" element={<LandingPage />}/>
+                        <Route exact path = "/checkout" element={<Checkout />} />
                     </Routes>
                 </StyledMainContainer>
                 <Footer />

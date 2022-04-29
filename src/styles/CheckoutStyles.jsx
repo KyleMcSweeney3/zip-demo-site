@@ -6,6 +6,6 @@ export default makeStyles(() => ({
       },
       paper: {
           padding: '20px'
-      }
+      },
 
 }));

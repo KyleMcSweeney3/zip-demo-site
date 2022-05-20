@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import styled from 'styled-components'
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
@@ -9,9 +10,10 @@ import IconLogo from './icons/Logo';
 
 const Container = styled.footer`
     display: flex;
-    height: 200px;
+    /* height: 200px; */
     background-color: white;
     padding: 20px 80px;
+    /* box-shadow: 30px 10px 0px rgba(0, 0, 0, 0.14); */
 
     @media (max-width: 768px) {
         flex-direction: column;
@@ -36,6 +38,10 @@ const Center = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
+
+    li {
+        padding: 5px 0px;
+    }
 
     @media (max-width: 768px) {
         align-items: flex-start;
@@ -116,9 +122,9 @@ const Footer = () => {
                 <h3>Links</h3>
                 <ul>
                     <li>
-                        <a href = "/zip-landing-page">
+                        <Link to = "/zip-landing-page" reloadDocument>
                             Zip - Buy now, pay later!
-                        </a>
+                        </Link>
                     </li>
                     <li>
                         <a href = "https://developers.zip.co/v2/docs" target = "_blank">

@@ -168,18 +168,8 @@ const Menu = () => {
                     <nav ref = {navRef}>
                         <ol>
                             <li>
-                                <a href = "/products" onClick={() => setMenuOpen(false)}>
-                                    Products
-                                </a>
-                            </li>
-                            <li>
                                 <a href = "/login" onClick={() => setMenuOpen(false)}>
                                     Login
-                                </a>
-                            </li>
-                            <li>
-                                <a href = "/signup" onClick={() => setMenuOpen(false)}>
-                                    Sign up
                                 </a>
                             </li>
                             <li>

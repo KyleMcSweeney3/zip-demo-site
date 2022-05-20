@@ -19,7 +19,7 @@ export default makeStyles(() => ({
           flex: 1,
           flexDirection: 'column',
           justifyContent: 'flex-end',
-          alignItems: 'flex-end'
+          alignItems: 'flex-end',
       },
       subtotal: {
           display: 'flex',

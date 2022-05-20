@@ -3,6 +3,8 @@ import { Typography, Button, Link } from '@material-ui/core'
 import styled from 'styled-components'
 import ZipProductWidget from '../components/ZipProductWidget'
 import useStyles from '../styles/CartStyles';
+import Helmet from 'react-helmet';
+
 
 const StyledCartItem = styled.div`
     display: flex;
@@ -16,7 +18,7 @@ const StyledCartItem = styled.div`
 
     img {
       padding: 0px;
-      width: 40px;
+      width: 30px;
       flex: 1;
 
       @media (max-width: 768px) {
@@ -66,6 +68,8 @@ const StyledCartItem = styled.div`
     }
 `;
 
+const Container = styled.div``
+
 const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
   const classes = useStyles();
 
@@ -73,7 +77,14 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
       <Typography variant="subtitle1">You have no items in your Shopping Cart!</Typography>
   );
 
+
   const FilledCart = () => (
+
+    // <>
+    //   <Container>
+        
+    //   </Container>
+    // </>
       <>
         {cart.line_items.map((item) => (
           <StyledCartItem key = {item.id}>
@@ -81,9 +92,9 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
             <p className='title'>{item.name}</p>
             <div className='edit'>
               <div className="quantity">
-                <Button type="button" size="small"onClick={() => updateCart(item.id, item.quantity - 1)}>-</Button>
+                <Button type="button" size="small" onClick={() => updateCart(item.id, item.quantity - 1)}>-</Button>
                 <span>{item.quantity}</span>
-                <Button type="button" size="small"onClick={() => updateCart(item.id, item.quantity + 1)}>+</Button>
+                <Button type="button" size="small" onClick={() => updateCart(item.id, item.quantity + 1)}>+</Button>
               </div>
               <div className = "remove">
                 <Button type="button" size="small" onClick={() => removeFromCart(item.id)}>Remove</Button>
@@ -98,18 +109,23 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
   if(!cart.line_items) return (<section>Loading...</section>);
 
   return (
-    <section>
-        <div className={classes.toolbar} />
-        <Typography className={classes.title} variant="h4" gutterBottom>Your Shopping Cart</Typography>
-        { !cart.line_items.length ? <EmptyCart /> : <FilledCart />}
-        <div className={classes.checkout}>
-          <div className={classes.continue}>
-            <h4 className={classes.subtotal}>Subtotal: {cart.subtotal.formatted_with_symbol}</h4>
-            <a href = "/checkout"><Button variant="contained" color="primary" className = {classes.checkoutButton}>Checkout</Button></a>
+    <>
+      <Helmet>
+          <script type="text/javascript" src="https://static.zipmoney.com.au/lib/js/zm-widget-js/dist/zip-widget.min.js"></script>
+        </Helmet>
+      <section>
+          <div className={classes.toolbar} />
+          <Typography className={classes.title} variant="h4" gutterBottom>Your Shopping Cart</Typography>
+          { !cart.line_items.length ? <EmptyCart /> : <FilledCart />}
+          <div className={classes.checkout}>
+            <div className={classes.continue}>
+              <h4 className={classes.subtotal}>Subtotal: {cart.subtotal.formatted_with_symbol}</h4>
+              <ZipProductWidget />
+              <a href = "/checkout"><Button variant="contained" color="primary" className = {classes.checkoutButton}>Checkout</Button></a>
+            </div>
           </div>
-        </div>
-        <ZipProductWidget />
-    </section>
+      </section>
+    </>
   );
 }
 

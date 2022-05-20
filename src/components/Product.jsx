@@ -1,34 +1,93 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card, CardMedia, CardContent, CardActions, Typography, IconButton } from '@material-ui/core'
-import { AddShoppingCart } from '@material-ui/icons'
+import { AddShoppingCart, SearchOutlined, FavoriteBorderOutlined } from '@material-ui/icons'
+import { useParams, Link } from 'react-router-dom'
 
-import useStyles from '../styles/ProductStyles'
+const Info = styled.div`
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.2);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+    cursor: pointer;
+`
 
-const Product = ({ product, onAddToCart }) => {
+const StyledProduct = styled.div`
+    margin: 5px;
+    min-width: 280px;
+    height: 350px;
+    background-color: #f5fbfd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 
-    const classes = useStyles();
+    &:hover ${Info}{
+        opacity: 1;
+    }
+`   
+
+const Circle = styled.div`
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+`
+
+const Image = styled.img`
+    height: 20rem;
+    z-index: 2;
+`
+
+const Icon = styled.div`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    transition: all 0.5s ease;
+
+    &:hover {
+        background-color: $e9f5f5;
+        transform: scale(1.1);
+    }
+`
+
+const Product = ({ product, onAddToCart}) => {
+
+    const productLink = {
+        pathname: `/products/${product.name.replace(/ /g, '-').toLowerCase()}`,
+    }
 
     return (
-        <Card className={classes.root}>
-            <CardMedia className={classes.media} image = {product.image.url} title={product.name}/>
-            <CardContent>
-                <div className={classes.cardContent}>
-                    <Typography variant='h6' gutterBottom>
-                        {product.name}
-                    </Typography>
-                    <Typography variant='h6' gutterBottom>
-                        {product.price.formatted_with_symbol}
-                    </Typography>
-                </div>
-                <Typography variant='body2' color="textSecondary" dangerouslySetInnerHTML={{__html: product.description}} />
-            </CardContent>
-            <CardActions disableSpacing className={classes.cardActions}>
-                <IconButton aria-label='Add to Cart' onClick={() => onAddToCart(product.id, 1)}>
+        <Link to={productLink} state={product} >
+        <StyledProduct>
+            {/* <Circle /> */}
+            <Image src = {product.image.url} />
+            <Info>
+                <Icon onClick={() => onAddToCart(product.id, 1)}>
                     <AddShoppingCart />
-                </IconButton>
-            </CardActions>
-        </Card>
+                </Icon>
+                <Icon>
+                    <SearchOutlined />
+                </Icon>
+                <Icon>
+                    <FavoriteBorderOutlined  />
+                </Icon>
+            </Info>
+        </StyledProduct>
+        </Link>
     )
 }
 

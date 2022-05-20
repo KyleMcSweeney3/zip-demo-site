@@ -9,8 +9,8 @@ export default makeStyles(() => ({
         }
       },
       media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
+        height: '0',
+        paddingTop: '70%', // 16:9
       },
       cardActions: {
         display: 'flex',
@@ -20,4 +20,8 @@ export default makeStyles(() => ({
         display: 'flex',
         justifyContent: 'space-between',
       },
+      price: {
+        marginLeft: '1rem',
+        marginTop: '1rem'
+      }
 }));

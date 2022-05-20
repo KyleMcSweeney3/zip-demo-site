@@ -141,7 +141,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     img {
-        width: 100%;
+        /* width: 100%; */
         max-width: 100%;
         vertical-align: middle;
     }

@@ -4,6 +4,7 @@ import Menu from './Menu';
 import IconLogo from './icons/Logo';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Badge } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const StyledHeader = styled.header`
     display: flex;
@@ -109,26 +110,16 @@ const Navbar = ({totalItems}) => {
                 <StyledLinks>
                     <ol>
                         <li>
-                            <a href = '/products'>
-                                Products
-                            </a>
-                        </li>
-                        <li>
-                            <a href = '/#login'>
+                            <Link to = '/#login'>
                                 Login
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href = '/#projects'>
-                                Sign up
-                            </a>
-                        </li>
-                        <li>
-                            <a href = "/cart">
+                            <Link to = "/cart">
                                 <Badge badgeContent={totalItems} color="secondary">
                                     <ShoppingCartOutlinedIcon />
                                 </Badge>
-                            </a>
+                            </Link>
                         </li>
                     </ol>
                 </StyledLinks>

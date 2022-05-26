@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from "../components/Navbar";
-import Slider from '../components/Slider';
 import Footer from '../components/Footer';
 import styled from 'styled-components';
 import GlobalStyle from '../globalstyles';
@@ -9,10 +8,11 @@ import Cart from '../components/Cart';
 import LandingPage from './LandingPage';
 import Checkout from './Checkout';
 import { commerce } from '../lib/commerce';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router-dom';
 import ProductPage from './ProductPage';
 import ZipStripBanner from '../components/ZipStripBanner';
 import { Modal } from 'semantic-ui-react';
+import OrderComplete from './OrderComplete';
 
 const StyledMainContainer = styled.main`
   counter-reset: section;
@@ -23,6 +23,7 @@ const Home = () => {
     const [products, setProducts] =  useState([]);
     const [cart, setCart] = useState({});
     const [checkoutType, setCheckoutType] = useState('standard');
+    const [checkoutToken, setCheckoutToken] = useState();
 
     const fetchProducts = async () => {
         const {data} = await commerce.products.list();
@@ -49,6 +50,7 @@ const Home = () => {
 
     const handleRemoveFromCart = async (productId) => {
         const { cart } = await commerce.cart.remove(productId);
+        alert(`Item has been removed from the cart!`)
         setCart(cart);
     }
 
@@ -56,6 +58,12 @@ const Home = () => {
         const { cart } = await commerce.cart.empty();
         setCart(cart);
     }
+
+    const deleteCart = async () => {
+        const { cart } = await commerce.cart.delete();
+        setCart(cart);
+    }
+    
 
     useEffect(() => {
         fetchProducts();
@@ -76,7 +84,7 @@ const Home = () => {
                         <Route exact path = "/zip-landing-page" element={<LandingPage />}/>
                         <Route exact path = "/checkout" element={<Checkout checkoutType={checkoutType} cart={cart}/>} />
                         <Route path = "/products/:id" element={<ProductPage updateCart={handleUpdateCartQuantity} onAddToCart={handleAddToCart}/>} />
-                        
+                        <Route path = "/order-complete" element={<OrderComplete cart={cart} emptyCart={emptyCart}/>} />
                     </Routes>
                 </StyledMainContainer>
                 <Footer />

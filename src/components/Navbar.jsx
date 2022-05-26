@@ -97,9 +97,9 @@ const Navbar = ({totalItems}) => {
 
     const Logo = (
         <div className="logo" tabIndex="-1">
-            <a href="/" aria-label="home">
+            <Link to="/" aria-label="home">
               <IconLogo />
-            </a>
+            </Link>
         </div>
     );
 

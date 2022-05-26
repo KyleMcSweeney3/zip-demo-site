@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AddShoppingCart, SearchOutlined, FavoriteBorderOutlined } from '@material-ui/icons'
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Info = styled.div`
     opacity: 0;
@@ -21,7 +21,7 @@ const Info = styled.div`
 
 const StyledProduct = styled.div`
     margin: 5px;
-    min-width: 280px;
+    min-width: 300px;
     height: 350px;
     background-color: #f5fbfd;
     display: flex;

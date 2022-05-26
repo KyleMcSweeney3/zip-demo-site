@@ -1,9 +1,12 @@
 import React from 'react'
-import { Typography, Button, Link } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
 import ZipProductWidget from '../components/ZipProductWidget'
 import useStyles from '../styles/CartStyles';
 import Helmet from 'react-helmet';
+import { Button, Icon } from 'semantic-ui-react'
+import { Delete } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 
 
 const StyledCartItem = styled.div`
@@ -28,11 +31,12 @@ const StyledCartItem = styled.div`
     }
 
     .title {
-      flex: 5;
+      flex: 4;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
+      margin-top: 20px;
 
       @media (max-width: 768px) {
         font-size: 16px;
@@ -43,17 +47,35 @@ const StyledCartItem = styled.div`
       display: flex;
       align-items: center;
       flex: 1;
+
+      span {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        border: 1px solid green;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0px 5px;
+      }
     }
 
     .remove {
       flex: 1;
       text-decoration: underline;
+      
+      Button {
+        color: white;
+      }
     }
 
     .price {
       flex: 1;
-      align-items: center;
+      display: flex;
+      align-items: flex-end;
       justify-content: center;
+      font-size: 16px;
+      font-weight: 550;
     }
 
     .edit {
@@ -68,7 +90,6 @@ const StyledCartItem = styled.div`
     }
 `;
 
-const Container = styled.div``
 
 const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
   const classes = useStyles();
@@ -79,12 +100,6 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
 
 
   const FilledCart = () => (
-
-    // <>
-    //   <Container>
-        
-    //   </Container>
-    // </>
       <>
         {cart.line_items.map((item) => (
           <StyledCartItem key = {item.id}>
@@ -92,12 +107,17 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
             <p className='title'>{item.name}</p>
             <div className='edit'>
               <div className="quantity">
-                <Button type="button" size="small" onClick={() => updateCart(item.id, item.quantity - 1)}>-</Button>
+                <Button size="mini" color="red" compact onClick={() => updateCart(item.id, item.quantity - 1)}>-</Button>
                 <span>{item.quantity}</span>
-                <Button type="button" size="small" onClick={() => updateCart(item.id, item.quantity + 1)}>+</Button>
+                <Button size="mini" color="green" compact onClick={() => updateCart(item.id, item.quantity + 1)}>+</Button>
               </div>
               <div className = "remove">
-                <Button type="button" size="small" onClick={() => removeFromCart(item.id)}>Remove</Button>
+                <Button color="red" size="small" inverted onClick={() => removeFromCart(item.id)} animated='fade'>
+                  <Button.Content visible>Remove</Button.Content>
+                  <Button.Content hidden>
+                    <Icon name='trash alternate' />
+                  </Button.Content>
+                </Button>
               </div>
               <p className = "price">{item.line_total.formatted_with_symbol}</p>
             </div>
@@ -120,8 +140,12 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
           <div className={classes.checkout}>
             <div className={classes.continue}>
               <h4 className={classes.subtotal}>Subtotal: {cart.subtotal.formatted_with_symbol}</h4>
-              <ZipProductWidget />
-              <a href = "/checkout"><Button variant="contained" color="primary" className = {classes.checkoutButton}>Checkout</Button></a>
+              { cart.subtotal.raw > 0 ?
+              <>
+                <ZipProductWidget />
+                <Link to = "/checkout"><Button color="green" className = {classes.checkoutButton}>Checkout</Button></Link>
+              </> : ''
+              }
             </div>
           </div>
       </section>

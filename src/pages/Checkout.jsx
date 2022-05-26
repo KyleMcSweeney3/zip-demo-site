@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Typography} from '@material-ui/core'
 import useStyles from '../styles/CheckoutStyles';
 import ZipProductWidget from '../components/ZipProductWidget';
-import { commerce } from '../lib/commerce';
-import { Button, Checkbox, Form, Input, Radio, Select, TextArea, Dimmer, Loader } from 'semantic-ui-react'
+import { Button,  Form, Input, Select,  Dimmer, Loader } from 'semantic-ui-react'
 import styled from 'styled-components';
 import Helmet from 'react-helmet';
+import { commerce } from '../lib/commerce';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, ElementsConsumer} from '@stripe/react-stripe-js';
 
 const options = [
     { key: 'm', text: 'Male', value: 'male' },
@@ -86,25 +87,24 @@ const Title = styled.h2`
     padding: 15px;
 `
 
+
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+
+
 const Checkout = ({checkoutType, cart}) => {
   const classes = useStyles();    
-  const [checkout, setCheckout] = useState(false)
-  const [liveObject, setLiveObject] = useState();
+  const [checkout, setCheckout] = useState(false);
   const [tokenId, setTokenId] = useState();
   const [paymentMethod, setPaymentMethod] = useState('zip');
 
-  useEffect(() => {
-    // let cartId = cart.id
-    // commerce.checkout.generateToken(cartId, {type: 'cart' })
-    //     .then(res => {
-    //         setLiveObject(res.live)
-    //         setTokenId(res.id)
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
-    // setCheckout(true)
-  }, []);
+  const handleSubmit = (event, elements, stripe) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+        return;
+    }
+
+  }
 
   const ZipCheckoutButton = () => (
     <>
@@ -115,7 +115,30 @@ const Checkout = ({checkoutType, cart}) => {
   )
 
   const CCCheckoutButton = () => (
-    <Button positive>Checkout With Credit Card</Button>
+    <>
+        {/* <Form>
+            <Form.Group>
+                <Form.Field control={Input} width={9} name='cc-number' placeholder='0000111100001111' label='Credit Card Number'/>
+                
+            </Form.Group>
+            <Form.Group>
+                <Form.Field control={Input} width={3} name='month' placeholder='01' type='month' label='Expiry Month'/>
+                <Form.Field control={Input} width={3} name='year' placeholder='2023' type='year' label='Expiry year'/>
+                <Form.Field control={Input} width={3} name='cvc' placeholder='123' label='CVC' min='000' max='999'/>
+            </Form.Group>
+        </Form> */}
+        <Elements stripe={stripePromise}>
+            <ElementsConsumer>
+                {({ elements, stripe}) => (
+                    <form style={{width: '50%'}} onSubmit={handleSubmit}>
+                        <CardElement options={{ hidePostalCode: true, iconStyle: 'solid'}} />
+                        <br /> <br />
+                    </form>
+                )}
+            </ElementsConsumer>
+        </Elements>
+        <Button positive>Checkout With Credit Card</Button>
+    </>
 )
 
   const LoadedCart = () => (
@@ -181,7 +204,7 @@ const Checkout = ({checkoutType, cart}) => {
                 ]
               },
               "config": {
-                "redirect_uri": "http://localhost:3000/"
+                "redirect_uri": "http://localhost:3000/order-complete"
               }
           })
       }).then(res => res.json())
@@ -189,6 +212,18 @@ const Checkout = ({checkoutType, cart}) => {
             if(data.state === "created") window.location.href=data.uri
         })
   }
+
+  useEffect(() => {
+    const generateToken = async () => {
+        console.log(cart.id);
+        try {
+            const token = await commerce.checkout.generateToken(cart.id, { type: 'cart'});
+            setTokenId(token);
+        } catch (error) {
+        }
+    }
+    generateToken();
+  }, [cart]);
 
   return (
       <>
@@ -201,30 +236,32 @@ const Checkout = ({checkoutType, cart}) => {
             <Container>
                 <FormContainer>
                     <Form>
-                        <Form.Group widths='equal'>
+                        <Form.Group widths='equal' >
                             <Form.Field
                                 control={Input}
                                 label='First name'
                                 placeholder='First name'
+                                required
                             />
                             <Form.Field
                                 control={Input}
                                 label='Last name'
                                 placeholder='Last name'
+                                required
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Field width={10} control={Input} label='Email' type='email' placeholder='example@example.com'/>
-                            <Form.Field width={6} control={Input} label='Phone Number' placeholder='0400000000'/>
+                            <Form.Field width={10} control={Input} label='Email' type='email' placeholder='example@example.com' required/>
+                            <Form.Field width={6} control={Input} label='Phone Number' placeholder='0400000000' required/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Field width={10} control={Input} name='street' label='Address' placeholder='123 Example St'/>
-                            <Form.Field width={6} control={Select} name='country' label='Country' placeholder='Australia' options={countries}/>
+                            <Form.Field width={10} control={Input} name='street' label='Address' placeholder='123 Example St' required/>
+                            <Form.Field width={6} control={Select} name='country' label='Country' placeholder='Australia' options={countries} required/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Field width={6} control={Input} name='city' label='City' placeholder='Sydney' />
-                            <Form.Field width={6} control={Select} label='State' name='state' search fluid options={states} placeholder='NSW'/>
-                            <Form.Field width={4} control={Input} name='Postcode' label='Postcode' placeholder='0000' />
+                            <Form.Field width={6} control={Input} name='city' label='City' placeholder='Sydney' required/>
+                            <Form.Field width={6} control={Select} label='State' name='state' search fluid options={states} placeholder='NSW' required/>
+                            <Form.Field width={4} control={Input} name='Postcode' label='Postcode' placeholder='0000' required/>
                         </Form.Group>
                     </Form>
                     

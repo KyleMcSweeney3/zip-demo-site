@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import useStyles from '../styles/CheckoutStyles';
 import ZipProductWidget from '../components/ZipProductWidget';
 import { Button,  Form, Input, Select,  Dimmer, Loader } from 'semantic-ui-react'
 import styled from 'styled-components';
@@ -77,6 +76,11 @@ const CartContainer = styled.div`
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
     border: 0;
     font-weight: 400;
+    margin-left: 60px;
+
+    @media (max-width: 768px) {
+        margin-left: 0px;
+    }
 `
 
 const PaymentMethodsContainer = styled.div`
@@ -84,31 +88,75 @@ const PaymentMethodsContainer = styled.div`
 `
 
 const Title = styled.h2`
-    padding: 15px;
+    padding: 20px 30px;
+`
+
+const CartSummary = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const ItemSummary = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 30px;
+    margin-bottom: 20px;
+    font-size: 14px;
+`
+
+const CartTotal = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 30px;
+    font-weight: 600;
+    font-size: 18px;
 `
 
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 
-const Checkout = ({checkoutType, cart}) => {
-  const classes = useStyles();    
-  const [checkout, setCheckout] = useState(false);
+const Checkout = ({checkoutType, cart, order, onCaptureCheckout, error}) => {
   const [tokenId, setTokenId] = useState();
   const [paymentMethod, setPaymentMethod] = useState('zip');
 
-  const handleSubmit = (event, elements, stripe) => {
+  // Handles Stripe form submission
+  const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
         return;
     }
 
+    const cardElement = elements.getElement(CardElement);
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({ type: 'card', card: cardElement});
+
+    if (error) {
+        console.log("Error: ", error);
+    } else {
+        const orderData = {
+            line_items: tokenId.live.line_items,
+            customer: { firstname: 'ZipTest', lastname: 'APPROVETEST', email: 'test@zipsandbox.com'},
+            shipping: { name: 'ZipTest APPROVETEST', street: '10 spring street', town_city: 'Sydney', country: 'AU'},
+            fulfillment: {shipping_method: 'Domestic'},
+            payment: {
+                gateway: 'stripe',
+                stripe: {
+                    payment_method_id: paymentMethod.id
+                }
+            }
+        }
+        onCaptureCheckout(tokenId.id, orderData);
+    }
+
   }
 
   const ZipCheckoutButton = () => (
     <>
-        
+        <Helmet>
+            <script type="text/javascript" src="https://static.zipmoney.com.au/lib/js/zm-widget-js/dist/zip-widget.min.js"></script>
+        </Helmet>
         <ZipProductWidget />
         <Button positive onClick={() => ZipCheckoutPost()}>Checkout With Zip</Button>
     </>
@@ -116,40 +164,34 @@ const Checkout = ({checkoutType, cart}) => {
 
   const CCCheckoutButton = () => (
     <>
-        {/* <Form>
-            <Form.Group>
-                <Form.Field control={Input} width={9} name='cc-number' placeholder='0000111100001111' label='Credit Card Number'/>
-                
-            </Form.Group>
-            <Form.Group>
-                <Form.Field control={Input} width={3} name='month' placeholder='01' type='month' label='Expiry Month'/>
-                <Form.Field control={Input} width={3} name='year' placeholder='2023' type='year' label='Expiry year'/>
-                <Form.Field control={Input} width={3} name='cvc' placeholder='123' label='CVC' min='000' max='999'/>
-            </Form.Group>
-        </Form> */}
         <Elements stripe={stripePromise}>
             <ElementsConsumer>
                 {({ elements, stripe}) => (
-                    <form style={{width: '50%'}} onSubmit={handleSubmit}>
+                    <form style={{width: '50%'}} onSubmit={(e) => handleSubmit(e, elements, stripe)}>
                         <CardElement options={{ hidePostalCode: true, iconStyle: 'solid'}} />
-                        <br /> <br />
+                        <br />
+                        <Button positive type='submit'>Checkout With Credit Card</Button>
                     </form>
                 )}
             </ElementsConsumer>
         </Elements>
-        <Button positive>Checkout With Credit Card</Button>
     </>
 )
 
   const LoadedCart = () => (
     <>
-    {cart.line_items.map((item) => (
-        <>
-        <div>{item.name}</div>
-        <div>{item.quantity}</div>
-        <div>{item.line_total.formatted_with_symbol}</div>
-        </>
-    ))}
+        <CartSummary>
+            {cart.line_items.map((item) => (
+            <ItemSummary>
+                <div><strong>{item.quantity}x</strong> {item.name}</div>
+                <div>{item.line_total.formatted_with_symbol}</div>
+            </ItemSummary>
+            ))}
+            <CartTotal>
+                <div>Subtotal: </div>
+                <div>{cart.subtotal.formatted_with_symbol}</div>
+            </CartTotal>
+        </CartSummary>
     </>
   )
 
@@ -215,7 +257,6 @@ const Checkout = ({checkoutType, cart}) => {
 
   useEffect(() => {
     const generateToken = async () => {
-        console.log(cart.id);
         try {
             const token = await commerce.checkout.generateToken(cart.id, { type: 'cart'});
             setTokenId(token);

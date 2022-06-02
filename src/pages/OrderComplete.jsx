@@ -9,20 +9,20 @@ const Container = styled.div`
     align-items: center;
 `
 
-const OrderComplete = ({ cart, emptyCart }) => {
+const OrderComplete = ({ cart, refreshCart }) => {
 
 	const [searchParams] = useSearchParams();
 	const checkoutResult = searchParams.get('result');
 	const checkoutId = searchParams.get('checkoutId');
 	const [charged, setCharged] = useState(false);
 
-	if (searchParams.get('result') == 'cancelled') {
-		window.location.replace("http://localhost:3000/checkout")
+	if (searchParams.get('result') === 'cancelled') {
+		window.location.replace("http://localhost:3000/checkout?cancelled")
 	}
 
 	useEffect(() => {
-		emptyCart();
-	  }, []);
+		refreshCart();
+	}, []);
 
 	if(!cart.line_items) {
 		return (
@@ -67,8 +67,10 @@ const OrderComplete = ({ cart, emptyCart }) => {
 					console.error('Error: ', error)
 				})
 		}
+		setCharged(true);
 	}
 
+	console.log(charged);
   return (
     <>
     <section> 

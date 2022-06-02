@@ -21,12 +21,11 @@ const StyledCartItem = styled.div`
 
     img {
       padding: 0px;
-      width: 30px;
-      flex: 1;
+      max-width: 10%;
+      flex: 2;
 
       @media (max-width: 768px) {
-        margin-top: 40px;
-        height: 40px;
+        display: none;
       }
     }
 
@@ -35,11 +34,12 @@ const StyledCartItem = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 18px;
       margin-top: 20px;
 
       @media (max-width: 768px) {
         font-size: 16px;
+        text-align: center;
       }
     }
 
@@ -67,15 +67,25 @@ const StyledCartItem = styled.div`
       Button {
         color: white;
       }
+
+      @media (max-width: 768px) {
+        margin-top: 5px;
+      }
     }
 
     .price {
       flex: 1;
       display: flex;
       align-items: flex-end;
-      justify-content: center;
+      justify-content: flex-end;
       font-size: 16px;
-      font-weight: 550;
+      font-weight: 600;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        justify-content: center;
+        margin-top: 0px;
+      }
     }
 
     .edit {
@@ -86,6 +96,8 @@ const StyledCartItem = styled.div`
 
       @media (max-width: 768px) {
         flex-direction: column;
+        justify-content: center;
+        margin-top: 10px;
       }
     }
 `;
@@ -114,12 +126,12 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
               <div className = "remove">
                 <Button color="red" size="small" inverted onClick={() => removeFromCart(item.id)} animated='fade'>
                   <Button.Content visible>Remove</Button.Content>
-                  <Button.Content hidden>
+                  <Button.Content hidden >
                     <Icon name='trash alternate' />
                   </Button.Content>
                 </Button>
               </div>
-              <p className = "price">{item.line_total.formatted_with_symbol}</p>
+              <h4 className = "price">{item.line_total.formatted_with_symbol}</h4>
             </div>
           </StyledCartItem>
         ))}
@@ -143,7 +155,13 @@ const Cart = ({ cart, emptyCart, updateCart, removeFromCart }) => {
               { cart.subtotal.raw > 0 ?
               <>
                 <ZipProductWidget />
-                <Link to = "/checkout"><Button color="green" className = {classes.checkoutButton}>Checkout</Button></Link>
+                <Link to = "/checkout">
+                  <Button color="green" className = {classes.checkoutButton} animated>
+                    <Button.Content visible style={{color: 'white'}}>Checkout</Button.Content>
+                    <Button.Content hidden>
+                      <Icon name='arrow right' style={{color: 'white'}}/>
+                    </Button.Content>
+                  </Button></Link>
               </> : ''
               }
             </div>

@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import { Badge } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const StyledMenu = styled.div`
     display: none;
@@ -95,7 +97,7 @@ const StyledSidebar = styled.aside`
         outline: 0;
         background-color: white;
         box-shadow: -10px 0px 30px -15px rgba(2, 12, 27, 0.7);
-        z-index: 9px;
+        z-index: 9;
         transform: translateX(${props => (props.menuOpen ? 0 : 100)}vw);
         visibility: ${props => (props.menuOpen ? 'visible' : 'hidden')};
         transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -107,7 +109,6 @@ const StyledSidebar = styled.aside`
         width: 100%;
         flex-direction: column;
         color: white;
-        /* font-family: 'SFMono'; */
         text-align: center;
     }
     ol {
@@ -144,7 +145,7 @@ const StyledSidebar = styled.aside`
     }
 `;
 
-const Menu = () => {
+const Menu = ({totalItems}) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -168,14 +169,16 @@ const Menu = () => {
                     <nav ref = {navRef}>
                         <ol>
                             <li>
-                                <a href = "/login" onClick={() => setMenuOpen(false)}>
+                                <Link to = "/login" onClick={() => setMenuOpen(false)}>
                                     Login
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href = "/cart" onClick={() => setMenuOpen(false)}>
-                                    <ShoppingCartOutlinedIcon />
-                                </a>
+                                <Link to = "/cart" onClick={() => setMenuOpen(false)}>
+                                    <Badge badgeContent={totalItems} color="secondary">
+                                        <ShoppingCartOutlinedIcon />
+                                    </Badge>
+                                </Link>
                             </li>
                         </ol>
                     </nav>

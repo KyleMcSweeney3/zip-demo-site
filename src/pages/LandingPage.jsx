@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Helmet from 'react-helmet';
 
 const PageHeader = styled.h1`
   text-align: center;
@@ -9,6 +10,9 @@ const PageHeader = styled.h1`
 const LandingPage = () => {
   return (
     <>
+      <Helmet>
+        <script type="text/javascript" src="https://static.zipmoney.com.au/lib/js/zm-widget-js/dist/zip-widget.min.js"></script>
+      </Helmet>
       <PageHeader>ZIP LANDING PAGE</PageHeader>
       <div zm-asset="landingpage" 
       data-env="sandbox"

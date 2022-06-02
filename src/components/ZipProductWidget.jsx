@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import React from 'react'
 import Helmet from 'react-helmet'
 
-const ZipProductWidget = (callback) => {
+const ZipProductWidget = () => {
 
   return (
     <>

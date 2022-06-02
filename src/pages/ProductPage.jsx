@@ -13,6 +13,10 @@ const StyledProductPage = styled.div`
       flex-direction: column;
       padding: 20px 0px;
     }
+
+    @media (max-width: 1300px) {
+      padding: 50px 50px;
+    }
 `
 
 const StyledImage = styled.div`
@@ -47,12 +51,20 @@ const Desc = styled.p`
     @media (max-width: 768px) {
       width: 100%;
     }
+
+    @media (max-width: 1300px) {
+      width: 100%;
+    }
 `
 
 const StyledInfo = styled.div`
   flex: 1;
   width: 70%;
   @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    @media (max-width: 1300px) {
       width: 100%;
     }
 `
@@ -76,6 +88,10 @@ const StyledFilter = styled.div`
     @media (max-width: 768px) {
       width: 100%;
     }
+
+    @media (max-width: 1300px) {
+      width: 100%;
+    }
 `
 
 const FilterTitle = styled.span`
@@ -89,6 +105,8 @@ const FilterDropdown = styled.select`
     padding: 10px 10px 10px 5px;
     font-size: 18px;
     font-weight: bold;
+    background-color: #fff;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
 
     &:hover {
       border: 1px solid #b0b0b0;
@@ -123,6 +141,10 @@ const AddToCartSection = styled.div`
     margin: 30px 0px;
 
     @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    @media (max-width: 1300px) {
       width: 100%;
     }
 `

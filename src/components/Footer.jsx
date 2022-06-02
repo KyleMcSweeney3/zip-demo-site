@@ -122,7 +122,7 @@ const Footer = () => {
                 <h3>Links</h3>
                 <ul>
                     <li>
-                        <Link to = "/zip-landing-page" reloadDocument>
+                        <Link to = "/zip-landing-page">
                             Zip - Buy now, pay later!
                         </Link>
                     </li>
